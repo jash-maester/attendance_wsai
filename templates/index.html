@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Submit Roll Number</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                background-color: #f5f5f5;
+            }
+            .form-container {
+                text-align: center;
+                background: #fff;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                width: 400px;
+            }
+            input {
+                margin: 10px 0;
+                padding: 10px;
+                width: 80%;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+            button {
+                padding: 10px 20px;
+                background: #28a745;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+            button:hover {
+                background: #218838;
+            }
+            .message {
+                margin-top: 15px;
+                font-size: 14px;
+            }
+            ul {
+                list-style-type: none;
+                padding: 0;
+                margin: 20px 0 0;
+                text-align: left;
+            }
+            ul li {
+                background: #f1f1f1;
+                margin: 5px 0;
+                padding: 10px;
+                border-radius: 4px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="form-container">
+            <h1>Submit Your Roll Number</h1>
+            <form id="rollForm">
+                <input type="text" name="roll_number" id="roll_number" placeholder="Enter your roll number" required />
+                <button type="submit">Submit</button>
+            </form>
+            <div id="responseMessage" class="message"></div>
+            <h2>Submitted Roll Numbers</h2>
+            <ul id="rollNumberList"></ul>
+        </div>
+
+        <script>
+            const rollForm = document.getElementById("rollForm");
+            const rollNumberList = document.getElementById("rollNumberList");
+            const responseMessage = document.getElementById("responseMessage");
+
+            // Fetch and display the roll numbers
+            async function fetchRollNumbers() {
+                const response = await fetch("/rollnumbers");
+                const rollNumbers = await response.json();
+                rollNumberList.innerHTML = ""; // Clear the list
+                rollNumbers.forEach((rollNumber) => {
+                    const li = document.createElement("li");
+                    li.textContent = rollNumber;
+                    rollNumberList.appendChild(li);
+                });
+            }
+
+            // Handle form submission
+            rollForm.addEventListener("submit", async (event) => {
+                event.preventDefault();
+                const rollNumber = document.getElementById("roll_number").value;
+
+                const response = await fetch("/submit", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: new URLSearchParams({ roll_number: rollNumber }),
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    responseMessage.style.color = "green";
+                    responseMessage.textContent = result.message;
+                    fetchRollNumbers(); // Refresh the list
+                } else {
+                    responseMessage.style.color = "red";
+                    responseMessage.textContent = result.error;
+                }
+
+                document.getElementById("roll_number").value = "";
+            });
+
+            // Load roll numbers on page load
+            fetchRollNumbers();
+        </script>
+    </body>
+</html>
