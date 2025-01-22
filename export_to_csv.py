@@ -23,7 +23,9 @@ def export_to_csv():
             writer.writerow(["Roll Number", "IP Address"])
 
             # Write the rows
-            writer.writerows(rows)
+            # writer.writerows(rows)
+            for row in rows:
+                writer.writerow([value.lower() for value in row])
 
         print(f"Data exported successfully to {CSV_FILE_PATH}")
 

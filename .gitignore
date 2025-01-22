@@ -1,2 +1,5 @@
 roll_numbers_export.csv
 ./instance/database.db
+instance/database.db
+*.csv
+*.db
