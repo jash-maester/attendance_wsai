@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+import argparse
 
 app = Flask(__name__)
 
@@ -52,4 +53,8 @@ def get_roll_numbers():
     return jsonify([roll.roll_number for roll in roll_numbers])
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0',port=8080,debug=True)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-p", "--port", help="server port to bind (default is 8080)", required=False, default=8080, type=int)
+    args = parser.parse_args()
+
+    app.run(host='0.0.0.0', port=args.port, debug=True)

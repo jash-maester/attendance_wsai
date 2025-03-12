@@ -28,13 +28,13 @@ Ensure you have the following installed:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/roll-number-submission.git
-   cd roll-number-submission
+   git clone https://github.com/jash-maester/attendance_wsai.git
+   cd attendance_wsai
    ```
 
 2. Install the required dependencies:
    ```bash
-   pip install flask flask-sqlalchemy
+   pip install flask flask-sqlalchemy rich-argparse
    ```
 
 3. Set up the directory structure:
@@ -56,17 +56,19 @@ Ensure you have the following installed:
 Start the Flask application:
 
 ```bash
-python server.py
+python server.py -p 8080
 ```
 
-The server will start at `http://127.0.0.1:8080`.
+The default port is `8080`, but you may change it using `--port=<PORT>`.  The server will then bind the supplied port.
+
+The server will start at `http://127.0.0.1:PORT`.
 
 To make it accessible on your local network, modify the `server.py` file:
 ```python
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080, debug=True)
+    app.run(host="0.0.0.0", port=PORT, debug=True)
 ```
-Access the app on your local network at `http://<your-local-ip>:8080`.
+Access the app on your local network at `http://<your-local-ip>:PORT`.
 
 ### 2. Submit Roll Numbers
 
