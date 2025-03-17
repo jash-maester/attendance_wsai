@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import argparse
+from sqlalchemy import Column, DateTime
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -12,8 +14,10 @@ db = SQLAlchemy(app)
 # Define the RollNumber model
 class RollNumber(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    roll_number = db.Column(db.String(50), unique=True, nullable=False)
-    ip_address = db.Column(db.String(100), unique=True, nullable=False)
+    roll_number = db.Column(db.String(20), unique=True, nullable=False)
+    ip_address = db.Column(db.String(30), unique=True, nullable=False)
+    timestamp = db.Column(db.DateTime(), unique=False, nullable=False)
+    course_code = db.Column(db.String(20), unique=False, nullable=False)
 
 # Create the database tables
 with app.app_context():
@@ -27,6 +31,7 @@ def index():
 def submit_roll_number():
     roll_number = request.form.get('roll_number')
     ip_address = request.remote_addr  # Get the client's IP address
+    course_id = request.form.get('course_id') # get the course id
 
     if not roll_number:
         return jsonify({"error": "Roll number is required"}), 400
@@ -39,8 +44,10 @@ def submit_roll_number():
     if RollNumber.query.filter_by(roll_number=roll_number).first():
         return jsonify({"error": "This roll number has already been submitted"}), 403
 
-    # Save the roll number and IP address to the database
-    new_roll_number = RollNumber(roll_number=roll_number, ip_address=ip_address)
+    # Save the roll number, IP address and timestamp to the database
+    ts = datetime.now()
+    new_roll_number = RollNumber(roll_number=roll_number, ip_address=ip_address, 
+                                 timestamp = ts, course_code = course_id)
     db.session.add(new_roll_number)
     db.session.commit()
 
