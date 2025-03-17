@@ -26,7 +26,14 @@
             input {
                 margin: 10px 0;
                 padding: 10px;
-                width: 80%;
+                width: 50%;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+            select {
+                margin: 10px 0;
+                padding: 10px;
+                width: 30%;
                 border: 1px solid #ccc;
                 border-radius: 4px;
             }
@@ -64,6 +71,13 @@
             <h1>Submit Your Roll Number</h1>
             <form id="rollForm">
                 <input type="text" name="roll_number" id="roll_number" placeholder="Enter your roll number" required />
+                <br/>
+                <label for='course_id'>Course ID:</label>
+                <select name="course_id" id="course_id" required>
+                    <option name="DA5402" value="DA5402" selected>DA5402</option>
+                    <option name='DA5401' value="DA5401" >DA5401</option>
+                </select>
+                <br/>
                 <button type="submit">Submit</button>
             </form>
             <div id="responseMessage" class="message"></div>
@@ -92,13 +106,14 @@
             rollForm.addEventListener("submit", async (event) => {
                 event.preventDefault();
                 const rollNumber = document.getElementById("roll_number").value;
+                const courseId = document.getElementById("course_id").value;
 
                 const response = await fetch("/submit", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded",
                     },
-                    body: new URLSearchParams({ roll_number: rollNumber }),
+                    body: new URLSearchParams({ roll_number: rollNumber, course_id: courseId }),
                 });
 
                 const result = await response.json();
